@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: smg-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:alpine
+    container_name: smg-redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: smg-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongodb:27017/smg-dms
+      - REDIS_URI=redis://redis:6379
+      - JWT_ACCESS_SECRET=smg_secret_access_key_123!
+      - JWT_REFRESH_SECRET=smg_secret_refresh_key_456!
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - backend-uploads:/usr/src/app/uploads
+
+  frontend:
+    build: ./frontend
+    container_name: smg-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
+  backend-uploads:

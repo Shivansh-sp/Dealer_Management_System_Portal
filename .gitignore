@@ -1,0 +1,33 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Production build outputs
+dist/
+**/dist/
+
+# Environment variables & secrets
+.env
+.env.local
+.env.*
+**/.env
+**/.env.*
+.env.production
+.env.development
+
+# Logs
+logs/
+**/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS/Editor configs
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
+
+# Backend uploads
+backend/uploads/

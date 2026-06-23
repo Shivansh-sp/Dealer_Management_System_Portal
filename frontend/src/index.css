@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 23% 97%; /* #F5F7FA */
+    --foreground: 220 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+
+    --primary: 220 57% 29%; /* #1F3B73 (Dark Navy Blue) */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 20% 90%;
+    --secondary-foreground: 220 20% 15%;
+
+    --muted: 210 20% 95%;
+    --muted-foreground: 215 15% 45%;
+
+    --accent: 210 20% 90%;
+    --accent-foreground: 220 20% 15%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 220 57% 29%;
+
+    --radius: 8px; /* 10px maximum per requirements */
+  }
+
+  .dark {
+    /* Keep a clean dark theme for ERP fallback, but default styles use professional light themes */
+    --background: 220 25% 10%;
+    --foreground: 210 20% 98%;
+
+    --card: 220 25% 12%;
+    --card-foreground: 210 20% 98%;
+
+    --popover: 220 25% 12%;
+    --popover-foreground: 210 20% 98%;
+
+    --primary: 220 57% 35%;
+    --primary-foreground: 210 20% 98%;
+
+    --secondary: 220 20% 20%;
+    --secondary-foreground: 210 20% 98%;
+
+    --muted: 220 20% 16%;
+    --muted-foreground: 215 15% 70%;
+
+    --accent: 220 20% 20%;
+    --accent-foreground: 210 20% 98%;
+
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 220 57% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased font-sans;
+  }
+}
+
+/* ERP Form element styling */
+input, select, textarea {
+  @apply bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-900;
+}
