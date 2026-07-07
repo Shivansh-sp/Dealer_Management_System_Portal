@@ -263,3 +263,148 @@ export const getProfile = catchAsync(async (req: Request, res: Response, next: N
     errors: null,
   });
 });
+
+export const updateProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { name, email, phoneNumber } = req.body;
+
+  const user = await User.findById(req.user?.id);
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+
+  if (name) user.name = name;
+  if (email) user.email = email;
+  if (phoneNumber) user.phoneNumber = phoneNumber;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Profile updated successfully',
+    data: {
+      id: user._id,
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phoneNumber: user.phoneNumber,
+    },
+  });
+});
+
+export const changePassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return next(new AppError('Please provide current password and new password', 400));
+  }
+
+  const user = await User.findById(req.user?.id).select('+password');
+  if (!user || !(await user.comparePassword(currentPassword))) {
+    return next(new AppError('Invalid current password', 401));
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Password changed successfully',
+  });
+});
+
+export const getUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const users = await User.find({ isDeleted: false }).sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    message: 'Users retrieved successfully',
+    data: users,
+  });
+});
+
+export const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { userId, name, email, role, phoneNumber, password } = req.body;
+
+  if (!userId || !name || !email || !role || !phoneNumber || !password) {
+    return next(new AppError('Please provide all user details', 400));
+  }
+
+  const existingUser = await User.findOne({ $or: [{ userId }, { email }] });
+  if (existingUser) {
+    return next(new AppError('User ID or Email already exists', 400));
+  }
+
+  const user = await User.create({
+    userId,
+    name,
+    email,
+    role,
+    phoneNumber,
+    password,
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'User created successfully',
+    data: {
+      id: user._id,
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phoneNumber: user.phoneNumber,
+    },
+  });
+});
+
+export const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const { name, email, role, phoneNumber, password } = req.body;
+
+  const user = await User.findById(id);
+  if (!user || user.isDeleted) {
+    return next(new AppError('User not found', 404));
+  }
+
+  if (name) user.name = name;
+  if (email) user.email = email;
+  if (role) user.role = role;
+  if (phoneNumber) user.phoneNumber = phoneNumber;
+  if (password) user.password = password;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'User updated successfully',
+    data: {
+      id: user._id,
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phoneNumber: user.phoneNumber,
+    },
+  });
+});
+
+export const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id);
+  if (!user || user.isDeleted) {
+    return next(new AppError('User not found', 404));
+  }
+
+  user.isDeleted = true;
+  user.deletedAt = new Date();
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    success: true,
+    message: 'User suspended successfully',
+  });
+});
+
+

@@ -17,6 +17,9 @@ import { PurchaseModule } from './pages/PurchaseModule';
 import { ServiceModule } from './pages/ServiceModule';
 import { InventoryModule } from './pages/InventoryModule';
 import { DocumentDmsModule } from './pages/DocumentDmsModule';
+import { AnalyticsModule } from './pages/AnalyticsModule';
+import { ProfileModule } from './pages/ProfileModule';
+import { SettingsModule } from './pages/SettingsModule';
 
 const queryClient = new QueryClient();
 
@@ -93,6 +96,9 @@ function DashboardWrapper() {
       {activeTab === 'service' && <ServiceModule />}
       {activeTab === 'warranty' && <AfterSalesModule defaultSubTab="warranty" />}
       {activeTab === 'documents' && <DocumentDmsModule />}
+      {activeTab === 'analytics' && <AnalyticsModule />}
+      {activeTab === 'profile' && <ProfileModule />}
+      {activeTab === 'settings' && <SettingsModule />}
     </DashboardLayout>
   );
 }

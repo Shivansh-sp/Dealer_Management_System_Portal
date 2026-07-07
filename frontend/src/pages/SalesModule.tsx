@@ -251,6 +251,46 @@ export const SalesModule: React.FC = () => {
         </div>
       )}
 
+      {/* Quick Download Reference Templates */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4">
+        <h3 className="text-xs font-bold text-[#1F3B73] uppercase tracking-wider flex items-center gap-1.5">
+          <FileSpreadsheet className="h-4.5 w-4.5" /> Department Slips & Reference Documents
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+            <div>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">Gate Pass Format PDF</p>
+              <p className="text-[10px] text-slate-400">Official gate security checkout slip</p>
+            </div>
+            <a
+              href="http://localhost:5000/uploads/Gate%20Pass%20Format.pdf"
+              download
+              target="_blank"
+              rel="noreferrer"
+              className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center gap-1 transition-all"
+            >
+              Download PDF
+            </a>
+          </div>
+
+          <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+            <div>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">PDI Inspection Sheet PDF</p>
+              <p className="text-[10px] text-slate-400">Pre-Delivery inspection checklists</p>
+            </div>
+            <a
+              href="http://localhost:5000/uploads/PDI%20INSPECTION%20SHEET.pdf"
+              download
+              target="_blank"
+              rel="noreferrer"
+              className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center gap-1 transition-all"
+            >
+              Download PDF
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Record Sale Modal */}
       {showRecordSale && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
