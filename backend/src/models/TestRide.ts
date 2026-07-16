@@ -21,6 +21,15 @@ const testRideSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    driverLicense: {
+      type: String,
+    },
+    route: {
+      type: String,
+    },
+    scooterModel: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ['Pending', 'Completed', 'Cancelled'],

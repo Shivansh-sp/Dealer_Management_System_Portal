@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, FileText, CheckCircle, ShieldCheck, Printer, Download, PenTool, RefreshCw, AlertCircle
 } from 'lucide-react';
+import { api } from '../services/api';
 
 interface DigitalFormModalProps {
   formType: 'service_schedule' | 'pdi' | 'gate_pass' | 'purchase_order' | 'material_receipt' | 'warranty_claim' | 'warranty_pickup' | 'failed_part_tag' | null;
@@ -113,7 +114,7 @@ export const DigitalFormModal: React.FC<DigitalFormModalProps> = ({ formType, is
     }
   };
 
-  const handleSignAndSubmit = () => {
+  const handleSignAndSubmit = async () => {
     if (!signatureName.trim()) {
       setErrors({ signature: 'Please type your full name to sign digitally.' });
       return;
@@ -132,15 +133,69 @@ export const DigitalFormModal: React.FC<DigitalFormModalProps> = ({ formType, is
     let currentStep = 0;
     setProgressLog(steps[0]);
 
+    // Perform API call in background
+    let apiSuccess = false;
+    let apiErrorMsg = '';
+    
+    const documentTypeMapping: Record<string, string> = {
+      service_schedule: 'Service Schedule',
+      pdi: 'PDI Inspection Sheet',
+      gate_pass: 'Gate Pass',
+      purchase_order: 'Purchase Order',
+      material_receipt: 'Material Receipt Sheet',
+      warranty_claim: 'Warranty Claim Form',
+      warranty_pickup: 'Warranty Pickup Sheet',
+      failed_part_tag: 'Failed Part Tag',
+    };
+
+    const docName = `${formTitles[formType]} (${
+      formData.customerName || 
+      formData.supplierName || 
+      formData.chassisNumber || 
+      formData.partSerial || 
+      formData.challanNumber || 
+      formData.trackingNo || 
+      formData.vehicleNumber || 
+      documentId
+    })`;
+
+    const relatedEntityId = 
+      formData.chassisNumber || 
+      formData.partSerial || 
+      formData.challanNumber || 
+      formData.trackingNo || 
+      formData.vehicleNumber || 
+      formData.invoiceNumber || 
+      formData.poNumber;
+
+    try {
+      await api.post('/dashboard/documents/digital', {
+        documentId,
+        name: docName,
+        documentType: documentTypeMapping[formType],
+        formData,
+        signature: signatureName,
+        signatureStyle,
+        relatedEntityId: relatedEntityId ? String(relatedEntityId) : undefined
+      });
+      apiSuccess = true;
+    } catch (err: any) {
+      console.error('Failed to save digital document:', err);
+      apiErrorMsg = err?.response?.data?.message || err.message;
+    }
+
     const interval = setInterval(() => {
       currentStep++;
       if (currentStep < steps.length) {
         setProgressLog(steps[currentStep]);
       } else {
         clearInterval(interval);
+        if (!apiSuccess) {
+          alert('Backend Sync Note: ' + (apiErrorMsg || 'Finalized locally, but server sync failed.'));
+        }
         setStep('success');
       }
-    }, 450);
+    }, 400);
   };
 
   const handlePrint = () => {

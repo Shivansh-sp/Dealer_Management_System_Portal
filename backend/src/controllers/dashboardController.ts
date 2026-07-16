@@ -47,6 +47,16 @@ export const globalSearch = catchAsync(async (req: Request, res: Response, next:
   });
 });
 
+// Cache invalidation utility
+export const clearDashboardCache = async () => {
+  try {
+    await redisClient.del('dashboard:analytics');
+    logger.debug('Dashboard analytics cache cleared.');
+  } catch (error) {
+    logger.error('Failed to clear dashboard analytics cache:', error);
+  }
+};
+
 // 2. Document Management
 export const uploadDocument = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { documentType, name, relatedEntityId } = req.body;
@@ -71,9 +81,45 @@ export const uploadDocument = catchAsync(async (req: Request, res: Response, nex
     uploadedBy: req.user?.id,
   });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Document uploaded successfully',
+    data: doc,
+    pagination: null,
+    errors: null,
+  });
+});
+
+export const saveDigitalDocument = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { documentId, name, documentType, formData, signature, signatureStyle, relatedEntityId } = req.body;
+
+  if (!name || !documentType) {
+    return next(new AppError('Document Type and Name are required', 400));
+  }
+
+  const finalDocId = documentId || `DOC-${Date.now().toString().slice(-6)}`;
+
+  const doc = await Document.create({
+    documentId: finalDocId,
+    name,
+    documentType,
+    isDigital: true,
+    formData,
+    signature,
+    signatureStyle,
+    relatedEntityId: relatedEntityId || undefined,
+    uploadedBy: req.user?.id,
+  });
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
+  res.status(201).json({
+    success: true,
+    message: 'Digital document saved successfully',
     data: doc,
     pagination: null,
     errors: null,

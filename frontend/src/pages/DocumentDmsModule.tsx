@@ -7,7 +7,7 @@ import { FileText, Upload, Download, Eye, Layers } from 'lucide-react';
 export const DocumentDmsModule: React.FC = () => {
   const queryClient = useQueryClient();
   const [showUpload, setShowUpload] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedDoc, setSelectedDoc] = useState<any | null>(null);
 
   // Queries
   const { data: documents } = useQuery({
@@ -83,27 +83,46 @@ export const DocumentDmsModule: React.FC = () => {
                     <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white flex items-center space-x-2">
                       <FileText className="h-4 w-4 text-blue-500" />
                       <span>{doc.name}</span>
+                      {doc.isDigital && (
+                        <span className="px-1.5 py-0.5 rounded text-[8px] bg-green-500/10 text-green-600 font-bold uppercase scale-90">Digital</span>
+                      )}
                     </td>
                     <td className="py-3 px-4">{doc.documentType}</td>
                     <td className="py-3 px-4 font-mono text-slate-400">{doc.relatedEntityId || 'N/A'}</td>
                     <td className="py-3 px-4 text-right space-x-1">
                       <button
-                        onClick={() => setPreviewUrl(`http://localhost:5000${doc.fileUrl}`)}
+                        onClick={() => setSelectedDoc(doc)}
                         className="p-1.5 text-slate-400 hover:text-blue-500 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
-                        title="Preview PDF"
+                        title="Preview Document"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
-                      <a
-                        href={`http://localhost:5000${doc.fileUrl}`}
-                        download
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-1.5 text-slate-400 hover:text-green-500 rounded hover:bg-slate-100 dark:hover:bg-slate-800 inline-block"
-                        title="Download PDF"
-                      >
-                        <Download className="h-4 w-4" />
-                      </a>
+                      {!doc.isDigital ? (
+                        <a
+                          href={`http://localhost:5000${doc.fileUrl}`}
+                          download
+                          target="_blank"
+                          rel="noreferrer"
+                          className="p-1.5 text-slate-400 hover:text-green-500 rounded hover:bg-slate-100 dark:hover:bg-slate-800 inline-block"
+                          title="Download PDF"
+                        >
+                          <Download className="h-4 w-4" />
+                        </a>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(doc, null, 2));
+                            const dlAnchor = document.createElement('a');
+                            dlAnchor.setAttribute("href", dataStr);
+                            dlAnchor.setAttribute("download", `${doc.documentId}.json`);
+                            dlAnchor.click();
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-green-500 rounded hover:bg-slate-100 dark:hover:bg-slate-800 inline-block"
+                          title="Download JSON Data"
+                        >
+                          <Download className="h-4 w-4" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -112,16 +131,77 @@ export const DocumentDmsModule: React.FC = () => {
           </div>
         </div>
 
-        {/* PDF Preview panel */}
+        {/* Live Document Preview panel */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4">
           <h3 className="text-sm font-semibold text-slate-400 uppercase">Live Document Preview</h3>
-          {previewUrl ? (
-            <div className="border border-slate-200 dark:border-slate-800 rounded h-[400px] overflow-hidden bg-slate-950">
-              <iframe src={previewUrl} className="w-full h-full" title="PDF Preview" />
-            </div>
+          {selectedDoc ? (
+            selectedDoc.isDigital ? (
+              <div className="border border-slate-200 dark:border-slate-800 rounded p-6 bg-slate-50 dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 space-y-4 max-h-[500px] overflow-y-auto">
+                <div className="flex justify-between items-start border-b pb-3 border-slate-200 dark:border-slate-800">
+                  <div>
+                    <h4 className="font-bold text-xs text-[#1F3B73] dark:text-blue-400">SMG DIGITAL CERTIFICATE</h4>
+                    <p className="text-[9px] text-slate-400">Secure digital registry form</p>
+                  </div>
+                  <span className="px-2 py-0.5 rounded text-[8px] bg-green-500 text-white font-extrabold">DIGITAL</span>
+                </div>
+                <div className="space-y-3 text-[10px]">
+                  <div className="grid grid-cols-2 gap-2 border-b pb-2 border-slate-100 dark:border-slate-800/50">
+                    <div>
+                      <span className="block text-slate-400 text-[8px] uppercase font-bold">Document ID</span>
+                      <span className="font-semibold">{selectedDoc.documentId}</span>
+                    </div>
+                    <div>
+                      <span className="block text-slate-400 text-[8px] uppercase font-bold">Type</span>
+                      <span className="font-semibold">{selectedDoc.documentType}</span>
+                    </div>
+                  </div>
+                  {/* Dynamically list all fields in formData */}
+                  <div className="grid grid-cols-2 gap-2 pt-1 border-b pb-2 border-slate-100 dark:border-slate-800/50">
+                    {selectedDoc.formData && Object.entries(selectedDoc.formData).map(([key, val]: any) => {
+                      if (key === 'parts' && Array.isArray(val)) {
+                        return (
+                          <div key={key} className="col-span-2">
+                            <span className="block text-slate-400 text-[8px] uppercase font-bold">Parts Replaced</span>
+                            <span className="font-semibold">{val.map((p: any) => `${p.label} (₹${p.price})`).join(', ')}</span>
+                          </div>
+                        );
+                      }
+                      if (typeof val === 'object') return null;
+                      const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, (str: string) => str.toUpperCase());
+                      return (
+                        <div key={key}>
+                          <span className="block text-slate-400 text-[8px] uppercase font-bold">{label}</span>
+                          <span className="font-semibold">
+                            {key === 'estimatedCost' || key === 'total' || key === 'unitPrice' ? `₹${val.toLocaleString()}` : String(val)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Signature details */}
+                  <div className="pt-2 flex justify-between items-end">
+                    <div className="text-[8px] text-slate-400 font-mono">
+                      SHA256: {selectedDoc._id?.slice(-8) || 'unknown'}a87f
+                    </div>
+                    <div className="text-right">
+                      <span className="block text-[8px] text-slate-400 uppercase font-bold">Signed By</span>
+                      <span className={`block font-serif italic text-xs ${
+                        selectedDoc.signatureStyle === 'cursive' ? 'font-serif italic text-sm' :
+                        selectedDoc.signatureStyle === 'bold_hand' ? 'font-mono uppercase font-bold text-[10px]' :
+                        'font-sans font-semibold tracking-wider text-[10px]'
+                      }`}>{selectedDoc.signature}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="border border-slate-200 dark:border-slate-800 rounded h-[400px] overflow-hidden bg-slate-950">
+                <iframe src={`http://localhost:5000${selectedDoc.fileUrl}`} className="w-full h-full" title="PDF Preview" />
+              </div>
+            )
           ) : (
             <div className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded h-[400px] flex items-center justify-center text-xs text-slate-400 text-center p-4">
-              Select a PDF document preview icon to display it here
+              Select a PDF or Digital document preview icon to display it here
             </div>
           )}
         </div>

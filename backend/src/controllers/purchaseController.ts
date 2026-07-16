@@ -3,6 +3,7 @@ import { PurchaseOrder } from '../models/PurchaseOrder';
 import { PDIReport } from '../models/PDIReport';
 import { Inventory } from '../models/Inventory';
 import { AppError, catchAsync } from '../utils/errors';
+import { clearDashboardCache } from './dashboardController';
 
 export const getPurchaseOrders = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const page = parseInt(req.query.page as string, 10) || 1;
@@ -50,6 +51,9 @@ export const createPurchaseOrder = catchAsync(async (req: Request, res: Response
     vendorName,
   });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Purchase Order generated successfully',
@@ -83,6 +87,9 @@ export const createPDIReport = catchAsync(async (req: Request, res: Response, ne
     { poNumber },
     { $set: { pdiStatus: status === 'Approved' ? 'Completed' : 'Failed' } }
   );
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(201).json({
     success: true,
@@ -132,6 +139,9 @@ export const receivePurchaseOrder = catchAsync(async (req: Request, res: Respons
       price: order.unitPrice * 1.25, // Markup price for resale
     });
   }
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(200).json({
     success: true,

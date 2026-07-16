@@ -5,6 +5,7 @@ import { TestRide } from '../models/TestRide';
 import { Quotation } from '../models/Quotation';
 import { AppError, catchAsync } from '../utils/errors';
 import mongoose from 'mongoose';
+import { clearDashboardCache } from './dashboardController';
 
 // Leads CRUD
 export const getLeads = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -69,6 +70,9 @@ export const createLead = catchAsync(async (req: Request, res: Response, next: N
     assignedTo: assignedTo || null,
   });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Lead created successfully',
@@ -91,6 +95,9 @@ export const updateLead = catchAsync(async (req: Request, res: Response, next: N
     return next(new AppError('Lead not found', 404));
   }
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(200).json({
     success: true,
     message: 'Lead updated successfully',
@@ -112,6 +119,9 @@ export const deleteLead = catchAsync(async (req: Request, res: Response, next: N
   if (!lead) {
     return next(new AppError('Lead not found', 404));
   }
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(200).json({
     success: true,
@@ -151,6 +161,9 @@ export const importLeadsCsv = catchAsync(async (req: Request, res: Response, nex
     });
     importedLeads.push(lead);
   }
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(201).json({
     success: true,
@@ -196,6 +209,9 @@ export const logCall = catchAsync(async (req: Request, res: Response, next: Next
   // Automatically update lead status to 'Follow-up'
   await Lead.findByIdAndUpdate(leadId, { status: 'Follow-up' });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Call logged successfully',
@@ -222,7 +238,7 @@ export const getTestRides = catchAsync(async (req: Request, res: Response, next:
 });
 
 export const bookTestRide = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { leadId, chassisNumber, scheduledTime, assignedStaff, remarks } = req.body;
+  const { leadId, chassisNumber, scheduledTime, assignedStaff, remarks, driverLicense, route, scooterModel } = req.body;
 
   if (!leadId || !chassisNumber || !scheduledTime) {
     return next(new AppError('Lead ID, Chassis Number, and Scheduled Time are required', 400));
@@ -234,7 +250,13 @@ export const bookTestRide = catchAsync(async (req: Request, res: Response, next:
     scheduledTime: new Date(scheduledTime),
     assignedStaff: assignedStaff || null,
     remarks,
+    driverLicense,
+    route,
+    scooterModel,
   });
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(201).json({
     success: true,
@@ -262,6 +284,9 @@ export const updateTestRideStatus = catchAsync(async (req: Request, res: Respons
   if (!testRide) {
     return next(new AppError('Test ride not found', 404));
   }
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(200).json({
     success: true,
@@ -304,6 +329,9 @@ export const createQuotation = catchAsync(async (req: Request, res: Response, ne
     validUntil,
     createdBy: req.user?.id,
   });
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(201).json({
     success: true,

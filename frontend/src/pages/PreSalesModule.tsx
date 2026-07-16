@@ -268,7 +268,9 @@ export const PreSalesModule: React.FC = () => {
               <thead>
                 <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-semibold">
                   <th className="py-3 px-4">Lead Name</th>
-                  <th className="py-3 px-4">Chassis Number</th>
+                  <th className="py-3 px-4">Model & Chassis</th>
+                  <th className="py-3 px-4">Driver License</th>
+                  <th className="py-3 px-4">Route</th>
                   <th className="py-3 px-4">Scheduled Date</th>
                   <th className="py-3 px-4">Status</th>
                   <th className="py-3 px-4 text-right">Actions</th>
@@ -278,7 +280,12 @@ export const PreSalesModule: React.FC = () => {
                 {testRides?.map((ride: any) => (
                   <tr key={ride._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/10">
                     <td className="py-3 px-4 font-medium text-slate-900 dark:text-white">{ride.leadId?.name}</td>
-                    <td className="py-3 px-4 font-semibold text-slate-400">{ride.chassisNumber}</td>
+                    <td className="py-3 px-4">
+                      <span className="block font-semibold text-slate-700 dark:text-slate-350">{ride.scooterModel || 'N/A'}</span>
+                      <span className="block text-[10px] text-slate-400">{ride.chassisNumber}</span>
+                    </td>
+                    <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{ride.driverLicense || 'N/A'}</td>
+                    <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{ride.route || 'N/A'}</td>
                     <td className="py-3 px-4">{new Date(ride.scheduledTime).toLocaleString()}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${
@@ -325,66 +332,56 @@ export const PreSalesModule: React.FC = () => {
       {subTab === 'calculator' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-400 uppercase">Cost Components Slider</h3>
+            <h3 className="text-sm font-semibold text-slate-400 uppercase">Cost Components (Manual Entry)</h3>
             <div className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-400 mb-1">Base Price (₹): {calcBasePrice.toLocaleString()}</label>
+                <label className="block text-slate-400 mb-1">Base Price (₹)</label>
                 <input
-                  type="range"
-                  min="90000"
-                  max="200000"
-                  step="5000"
+                  type="number"
+                  min="0"
                   value={calcBasePrice}
                   onChange={(e) => setCalcBasePrice(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 mb-1">Insurance (₹): {calcInsurance.toLocaleString()}</label>
+                <label className="block text-slate-400 mb-1">Insurance (₹)</label>
                 <input
-                  type="range"
-                  min="3000"
-                  max="15000"
-                  step="500"
+                  type="number"
+                  min="0"
                   value={calcInsurance}
                   onChange={(e) => setCalcInsurance(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 mb-1">Accessories (₹): {calcAccessories.toLocaleString()}</label>
+                <label className="block text-slate-400 mb-1">Accessories (₹)</label>
                 <input
-                  type="range"
-                  min="1000"
-                  max="12000"
-                  step="500"
+                  type="number"
+                  min="0"
                   value={calcAccessories}
                   onChange={(e) => setCalcAccessories(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 mb-1">Maintenance / AMC Plan (₹): {calcMaintenance.toLocaleString()}</label>
+                <label className="block text-slate-400 mb-1">Maintenance / AMC Plan (₹)</label>
                 <input
-                  type="range"
-                  min="1500"
-                  max="8000"
-                  step="500"
+                  type="number"
+                  min="0"
                   value={calcMaintenance}
                   onChange={(e) => setCalcMaintenance(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 mb-1">Registration & RTO Charges (₹): {calcRegistration.toLocaleString()}</label>
+                <label className="block text-slate-400 mb-1">Registration & RTO Charges (₹)</label>
                 <input
-                  type="range"
-                  min="4000"
-                  max="15000"
-                  step="500"
+                  type="number"
+                  min="0"
                   value={calcRegistration}
                   onChange={(e) => setCalcRegistration(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
             </div>
@@ -592,6 +589,42 @@ export const PreSalesModule: React.FC = () => {
                   placeholder="e.g. CS12345"
                   className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded focus:outline-none"
                 />
+              </div>
+              <div>
+                <label className="block text-slate-400 mb-1">Scooter Model</label>
+                <select
+                  required
+                  {...regRide('scooterModel')}
+                  className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded focus:outline-none"
+                >
+                  <option value="">Select Model</option>
+                  <option value="SMG E1 Pro">SMG E1 Pro (High Range)</option>
+                  <option value="SMG E1 Lite">SMG E1 Lite (Standard)</option>
+                  <option value="SMG E2 Sport">SMG E2 Sport (Performance)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-slate-400 mb-1">Driver License Number</label>
+                <input
+                  type="text"
+                  required
+                  {...regRide('driverLicense')}
+                  placeholder="e.g. DL-1420110023456"
+                  className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-400 mb-1">Test Ride Route</label>
+                <select
+                  required
+                  {...regRide('route')}
+                  className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded focus:outline-none"
+                >
+                  <option value="">Select Route</option>
+                  <option value="Short Route (2 km)">Short Route (2 km)</option>
+                  <option value="Medium Route (5 km)">Medium Route (5 km)</option>
+                  <option value="Long Route (10 km)">Long Route (10 km)</option>
+                </select>
               </div>
               <div>
                 <label className="block text-slate-400 mb-1">Scheduled Time</label>

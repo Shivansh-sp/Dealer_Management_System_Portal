@@ -33,7 +33,22 @@ const documentSchema = new Schema(
     },
     fileUrl: {
       type: String,
-      required: true,
+      required: function (this: any) {
+        return !this.isDigital;
+      },
+    },
+    isDigital: {
+      type: Boolean,
+      default: false,
+    },
+    formData: {
+      type: Schema.Types.Mixed,
+    },
+    signature: {
+      type: String,
+    },
+    signatureStyle: {
+      type: String,
     },
     relatedEntityId: {
       type: String, // poNumber, chassisNumber, claimId, etc.

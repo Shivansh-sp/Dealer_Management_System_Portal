@@ -239,42 +239,38 @@ export const AfterSalesModule: React.FC<{ defaultSubTab?: 'hsrp' | 'warranty' | 
       {subTab === 'resale' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-400 uppercase">Depreciation Inputs</h3>
+            <h3 className="text-sm font-semibold text-slate-400 uppercase">Depreciation Inputs (Manual Entry)</h3>
             <div className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-400 mb-1">Scooter Age (Years): {scooterAge}</label>
+                <label className="block text-slate-400 mb-1">Scooter Age (Years)</label>
                 <input
-                  type="range"
-                  min="1"
-                  max="6"
-                  step="1"
+                  type="number"
+                  min="0"
+                  max="15"
                   value={scooterAge}
                   onChange={(e) => setScooterAge(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 mb-1">Kilometers Driven (kms): {kmsDriven.toLocaleString()}</label>
+                <label className="block text-slate-400 mb-1">Kilometers Driven (kms)</label>
                 <input
-                  type="range"
-                  min="1000"
-                  max="50000"
-                  step="2000"
+                  type="number"
+                  min="0"
                   value={kmsDriven}
                   onChange={(e) => setKmsDriven(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 mb-1">Battery Health State (%): {batteryHealth}%</label>
+                <label className="block text-slate-400 mb-1">Battery Health State (%)</label>
                 <input
-                  type="range"
-                  min="50"
+                  type="number"
+                  min="0"
                   max="100"
-                  step="1"
                   value={batteryHealth}
                   onChange={(e) => setBatteryHealth(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-250 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold"
                 />
               </div>
             </div>

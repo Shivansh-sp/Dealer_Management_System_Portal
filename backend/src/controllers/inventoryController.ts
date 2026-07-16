@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Inventory } from '../models/Inventory';
 import { GatePass } from '../models/GatePass';
 import { AppError, catchAsync } from '../utils/errors';
+import { clearDashboardCache } from './dashboardController';
 
 export const getInventory = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const page = parseInt(req.query.page as string, 10) || 1;
@@ -74,6 +75,9 @@ export const addInventoryItem = catchAsync(async (req: Request, res: Response, n
     warehouseLocation: warehouseLocation || 'Main Warehouse',
   });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Inventory item added successfully',
@@ -116,6 +120,9 @@ export const generateGatePass = catchAsync(async (req: Request, res: Response, n
     generatedBy: req.user?.id,
   });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Gate pass generated successfully',
@@ -143,6 +150,9 @@ export const approveGatePass = catchAsync(async (req: Request, res: Response, ne
     { chassisNumber: gatePass.chassisNumber },
     { $set: { stockLevel: 0 } } // Dispatched/Sold
   );
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(200).json({
     success: true,

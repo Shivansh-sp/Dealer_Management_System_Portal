@@ -7,6 +7,7 @@ import {
   uploadDocument,
   getDocuments,
   getDashboardAnalytics,
+  saveDigitalDocument,
 } from '../controllers/dashboardController';
 import { authenticate } from '../middlewares/auth';
 
@@ -48,5 +49,6 @@ router.get('/search', globalSearch);
 router.get('/analytics', getDashboardAnalytics);
 router.get('/documents', getDocuments);
 router.post('/documents/upload', upload.single('file'), uploadDocument);
+router.post('/documents/digital', saveDigitalDocument);
 
 export default router;

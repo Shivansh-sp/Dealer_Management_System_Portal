@@ -3,6 +3,7 @@ import { Sales } from '../models/Sales';
 import { Customer } from '../models/Customer';
 import { Inventory } from '../models/Inventory';
 import { AppError, catchAsync } from '../utils/errors';
+import { clearDashboardCache } from './dashboardController';
 
 export const getSales = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const page = parseInt(req.query.page as string, 10) || 1;
@@ -100,6 +101,9 @@ export const recordSale = catchAsync(async (req: Request, res: Response, next: N
   inventoryItem.stockLevel -= qty;
   await inventoryItem.save();
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Sale transaction recorded successfully',
@@ -126,6 +130,9 @@ export const updateSubsidyStatus = catchAsync(async (req: Request, res: Response
   if (!sale) {
     return next(new AppError('Sales record not found', 404));
   }
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(200).json({
     success: true,

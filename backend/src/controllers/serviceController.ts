@@ -7,6 +7,7 @@ import { Material } from '../models/Material';
 import { Inventory } from '../models/Inventory';
 import { Customer } from '../models/Customer';
 import { AppError, catchAsync } from '../utils/errors';
+import { clearDashboardCache } from './dashboardController';
 
 // 1. HSRP Booking & General Service Booking
 export const createBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -37,6 +38,9 @@ export const createBooking = catchAsync(async (req: Request, res: Response, next
     scheduledDate: new Date(scheduledDate),
     details,
   });
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(201).json({
     success: true,
@@ -104,6 +108,9 @@ export const submitWarrantyClaim = catchAsync(async (req: Request, res: Response
     issueDescription,
   });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Warranty claim submitted successfully',
@@ -145,6 +152,9 @@ export const updateWarrantyClaimStatus = catchAsync(async (req: Request, res: Re
     return next(new AppError('Warranty claim not found', 404));
   }
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(200).json({
     success: true,
     message: 'Warranty claim status updated',
@@ -181,6 +191,9 @@ export const createServiceRecord = catchAsync(async (req: Request, res: Response
     roadsideAssistance: roadsideAssistance || false,
   });
 
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
+
   res.status(201).json({
     success: true,
     message: 'Service record job card created successfully',
@@ -208,6 +221,9 @@ export const updateServiceRecordStatus = catchAsync(async (req: Request, res: Re
   if (!service) {
     return next(new AppError('Service record not found', 404));
   }
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(200).json({
     success: true,
@@ -258,6 +274,9 @@ export const createMaterialRequest = catchAsync(async (req: Request, res: Respon
     requestedBy: req.user?.id,
     status: 'Pending Store Approval',
   });
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(201).json({
     success: true,
@@ -336,6 +355,9 @@ export const approveMaterialRequest = catchAsync(async (req: Request, res: Respo
   }
 
   await materialReq.save();
+
+  // Clear dashboard stats cache so UI updates immediately
+  await clearDashboardCache();
 
   res.status(200).json({
     success: true,
