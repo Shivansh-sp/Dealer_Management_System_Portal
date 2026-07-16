@@ -3,12 +3,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { useForm } from 'react-hook-form';
 import { Plus, CheckSquare, Clipboard, FileText } from 'lucide-react';
+import { DigitalFormModal } from '../components/DigitalFormModal';
 
 export const PurchaseModule: React.FC = () => {
   const queryClient = useQueryClient();
   const [subTab, setSubTab] = useState<'po' | 'pdi'>('po');
   const [showCreatePo, setShowCreatePo] = useState(false);
   const [showLogPdi, setShowLogPdi] = useState(false);
+  const [digitalForm, setDigitalForm] = useState<'purchase_order' | 'pdi' | null>(null);
 
   // Queries
   const { data: orders } = useQuery({
@@ -177,42 +179,36 @@ export const PurchaseModule: React.FC = () => {
         </div>
       )}
 
-      {/* Quick Download Reference Templates */}
+      {/* Quick Reference Digital Forms */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4">
         <h3 className="text-xs font-bold text-[#1F3B73] uppercase tracking-wider flex items-center gap-1.5">
-          <FileText className="h-4.5 w-4.5" /> Department Templates & Reference Sheets
+          <FileText className="h-4.5 w-4.5" /> Department Templates & Digital Forms
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
             <div>
-              <p className="text-xs font-semibold text-slate-800 dark:text-white">Purchase Order Format PDF</p>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">Purchase Order Format</p>
               <p className="text-[10px] text-slate-400">Official template for raising supplier orders</p>
             </div>
-            <a
-              href="http://localhost:5000/uploads/PURCHASE%20ORDER%20Format.pdf"
-              download
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => setDigitalForm('purchase_order')}
               className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center gap-1 transition-all"
             >
-              Download PDF
-            </a>
+              Fill Digital Form
+            </button>
           </div>
 
           <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
             <div>
-              <p className="text-xs font-semibold text-slate-800 dark:text-white">PDI Inspection Sheet PDF</p>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">PDI Inspection Sheet</p>
               <p className="text-[10px] text-slate-400">Pre-Delivery inspection verification document</p>
             </div>
-            <a
-              href="http://localhost:5000/uploads/PDI%20INSPECTION%20SHEET.pdf"
-              download
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => setDigitalForm('pdi')}
               className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center gap-1 transition-all"
             >
-              Download PDF
-            </a>
+              Fill Digital Form
+            </button>
           </div>
         </div>
       </div>
@@ -357,6 +353,7 @@ export const PurchaseModule: React.FC = () => {
           </div>
         </div>
       )}
+      <DigitalFormModal formType={digitalForm} isOpen={digitalForm !== null} onClose={() => setDigitalForm(null)} />
     </div>
   );
 };

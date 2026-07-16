@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Users, DollarSign, Package, Wrench, AlertTriangle, Clipboard, ShieldAlert, Activity } from 'lucide-react';
+import { Users, IndianRupee, Package, Wrench, AlertTriangle, Clipboard, ShieldAlert, Activity } from 'lucide-react';
 
 export const DashboardHome: React.FC = () => {
   const { user } = useAuthStore();
@@ -90,7 +90,7 @@ export const DashboardHome: React.FC = () => {
             <span className="text-2xl font-bold text-slate-700">{kpis.salesCount} units</span>
             <p className="text-[9px] text-green-600 mt-1 font-semibold">↑ 8% vs last month</p>
           </div>
-          <DollarSign className="h-8 w-8 text-green-500" />
+          <IndianRupee className="h-8 w-8 text-green-500" />
         </div>
 
         <div className="bg-white p-4 rounded border border-slate-200 shadow-sm flex items-center justify-between">

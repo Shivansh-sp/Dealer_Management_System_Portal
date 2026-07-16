@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useNotificationStore } from '../store/notificationStore';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.jpg';
 import {
   LayoutDashboard,
   Users,
-  DollarSign,
+  IndianRupee,
   TrendingUp,
   ShoppingCart,
   Package,
@@ -66,7 +67,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['*'] },
     { id: 'leads', label: 'Leads', icon: Users, roles: ['Master Admin', 'Pre Sales Manager'] },
-    { id: 'sales', label: 'Sales', icon: DollarSign, roles: ['Master Admin', 'Sales Manager', 'Finance Manager'] },
+    { id: 'sales', label: 'Sales', icon: IndianRupee, roles: ['Master Admin', 'Sales Manager', 'Finance Manager'] },
     { id: 'aftersales', label: 'After Sales', icon: TrendingUp, roles: ['Master Admin', 'After Sales Manager'] },
     { id: 'purchase', label: 'Purchase', icon: ShoppingCart, roles: ['Master Admin', 'Purchase Manager'] },
     { id: 'inventory', label: 'Inventory', icon: Package, roles: ['Master Admin', 'Purchase Manager', 'Spare House Officer', 'Sales Manager'] },
@@ -90,8 +91,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       <aside className="w-64 bg-[#1F3B73] text-white flex flex-col justify-between shrink-0 shadow-lg">
         <div>
           {/* Logo Section */}
-          <div className="h-16 flex items-center px-6 border-b border-white/10 justify-between">
-            <span className="text-2xl font-bold tracking-wider text-white">SMG</span>
+          <div className="h-16 flex items-center px-6 border-b border-white/10 justify-between bg-white">
+            <img src={logo} alt="SMG Logo" className="h-10 w-auto object-contain" />
           </div>
 
           {/* Back Button */}

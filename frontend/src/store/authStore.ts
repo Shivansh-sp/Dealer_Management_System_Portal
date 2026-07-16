@@ -24,8 +24,8 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  accessToken: localStorage.getItem('accessToken'),
-  isAuthenticated: !!localStorage.getItem('accessToken'),
+  accessToken: sessionStorage.getItem('accessToken'),
+  isAuthenticated: !!sessionStorage.getItem('accessToken'),
   isLoading: false,
 
   login: async (userId, password) => {
@@ -46,8 +46,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const res = await api.post('/auth/verify-otp', { tempToken, otp });
       const { accessToken, refreshToken, user } = res.data.data;
 
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      sessionStorage.setItem('accessToken', accessToken);
+      sessionStorage.setItem('refreshToken', refreshToken);
 
       set({
         accessToken,
@@ -62,8 +62,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
     set({
       user: null,
       accessToken: null,
@@ -76,8 +76,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const res = await api.get('/auth/profile');
       set({ user: res.data.data });
     } catch (err) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
       set({
         user: null,
         accessToken: null,

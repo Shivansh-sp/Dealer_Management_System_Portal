@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logo from '../assets/logo.jpg';
 import { useAuthStore } from '../store/authStore';
 import { useNotificationStore } from '../store/notificationStore';
 import { useNavigate } from 'react-router-dom';
@@ -64,8 +65,8 @@ export const Login: React.FC = () => {
       <div className="w-full lg:w-[40%] bg-white flex flex-col justify-between p-12 border-r border-slate-200">
         <div>
           {/* Logo */}
-          <div className="text-3xl font-extrabold tracking-wider text-[#1F3B73]">
-            SMG
+          <div className="flex items-center">
+            <img src={logo} alt="SMG Logo" className="h-12 w-auto object-contain" />
           </div>
         </div>
 

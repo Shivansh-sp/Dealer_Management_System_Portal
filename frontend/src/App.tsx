@@ -25,13 +25,31 @@ const queryClient = new QueryClient();
 
 // Route guard for authenticated route
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, fetchProfile } = useAuthStore();
+  const { isAuthenticated, fetchProfile, user } = useAuthStore();
+  const [isVerifying, setIsVerifying] = useState(true);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchProfile();
-    }
-  }, [isAuthenticated, fetchProfile]);
+    const verifyAuth = async () => {
+      if (isAuthenticated && !user) {
+        try {
+          await fetchProfile();
+        } catch (err) {
+          // fetchProfile clears storage/state on error
+        }
+      }
+      setIsVerifying(false);
+    };
+    verifyAuth();
+  }, [isAuthenticated, fetchProfile, user]);
+
+  if (isAuthenticated && isVerifying && !user) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5F7FA]">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1F3B73]"></div>
+        <p className="mt-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Verifying Session...</p>
+      </div>
+    );
+  }
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };

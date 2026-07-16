@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { useForm } from 'react-hook-form';
-import { ShieldCheck, Calendar, DollarSign, Plus, FileText } from 'lucide-react';
+import { ShieldCheck, Calendar, Plus, FileText } from 'lucide-react';
+import { DigitalFormModal } from '../components/DigitalFormModal';
 
 export const AfterSalesModule: React.FC<{ defaultSubTab?: 'hsrp' | 'warranty' | 'resale' }> = ({ defaultSubTab }) => {
   const queryClient = useQueryClient();
@@ -15,6 +16,7 @@ export const AfterSalesModule: React.FC<{ defaultSubTab?: 'hsrp' | 'warranty' | 
   }, [defaultSubTab]);
   const [showBookHsrp, setShowBookHsrp] = useState(false);
   const [showSubmitClaim, setShowSubmitClaim] = useState(false);
+  const [digitalForm, setDigitalForm] = useState<'warranty_claim' | 'warranty_pickup' | 'failed_part_tag' | null>(null);
 
   // Resale calculator state
   const [scooterAge, setScooterAge] = useState(1);
@@ -309,55 +311,46 @@ export const AfterSalesModule: React.FC<{ defaultSubTab?: 'hsrp' | 'warranty' | 
       {/* Quick Download Reference Templates */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4">
         <h3 className="text-xs font-bold text-[#1F3B73] uppercase tracking-wider flex items-center gap-1.5">
-          <FileText className="h-4.5 w-4.5" /> Department Slips & Reference Documents
+          <FileText className="h-4.5 w-4.5" /> Department Slips & Digital Forms
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex flex-col justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors space-y-3">
             <div>
-              <p className="text-xs font-semibold text-slate-800 dark:text-white">Warranty Claim Form PDF</p>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">Warranty Claim Form</p>
               <p className="text-[10px] text-slate-400">Official template for raising warranty claims</p>
             </div>
-            <a
-              href="http://localhost:5000/uploads/WARRANTY%20CLAIM%20FORM(CRM)%20-%20Copy.pdf"
-              download
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => setDigitalForm('warranty_claim')}
               className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-all"
             >
-              Download PDF
-            </a>
+              Fill Digital Form
+            </button>
           </div>
 
           <div className="flex flex-col justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors space-y-3">
             <div>
-              <p className="text-xs font-semibold text-slate-800 dark:text-white">Warranty Part Pick Up PDF</p>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">Warranty Part Pick Up</p>
               <p className="text-[10px] text-slate-400">Part pickup verification sheet</p>
             </div>
-            <a
-              href="http://localhost:5000/uploads/WARRANTY%20PART%20PICK%20UP%20(CRM)%20-%20Copy.pdf"
-              download
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => setDigitalForm('warranty_pickup')}
               className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-all"
             >
-              Download PDF
-            </a>
+              Fill Digital Form
+            </button>
           </div>
 
           <div className="flex flex-col justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors space-y-3">
             <div>
-              <p className="text-xs font-semibold text-slate-800 dark:text-white">Failed Part Tag PDF</p>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">Failed Part Tag</p>
               <p className="text-[10px] text-slate-400">Security and component failure tags</p>
             </div>
-            <a
-              href="http://localhost:5000/uploads/FAILED%20TAG%20PART%20(CRM)%20-%20Copy.pdf"
-              download
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => setDigitalForm('failed_part_tag')}
               className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-all"
             >
-              Download PDF
-            </a>
+              Fill Digital Form
+            </button>
           </div>
         </div>
       </div>
@@ -508,6 +501,7 @@ export const AfterSalesModule: React.FC<{ defaultSubTab?: 'hsrp' | 'warranty' | 
           </div>
         </div>
       )}
+      <DigitalFormModal formType={digitalForm} isOpen={digitalForm !== null} onClose={() => setDigitalForm(null)} />
     </div>
   );
 };

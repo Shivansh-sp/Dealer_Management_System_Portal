@@ -19,7 +19,7 @@ import {
 import {
   TrendingUp,
   Users,
-  DollarSign,
+  IndianRupee,
   Package,
   Wrench,
   ShieldCheck,
@@ -145,7 +145,7 @@ export const AnalyticsModule: React.FC = () => {
             <p className="text-[9px] text-green-600 font-semibold flex items-center">↑ 14.2% vs last month</p>
           </div>
           <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg">
-            <DollarSign className="h-6 w-6" />
+            <IndianRupee className="h-6 w-6" />
           </div>
         </div>
 

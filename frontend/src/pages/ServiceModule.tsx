@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import { useForm } from 'react-hook-form';
 import { Plus, Barcode, Play, Clipboard, Compass, CheckCircle, Clock, FileText } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
+import { DigitalFormModal } from '../components/DigitalFormModal';
 
 export const ServiceModule: React.FC = () => {
   const queryClient = useQueryClient();
@@ -11,6 +12,7 @@ export const ServiceModule: React.FC = () => {
   const [showBookService, setShowBookService] = useState(false);
   const [showCreateJobCard, setShowCreateJobCard] = useState(false);
   const [showRequestPart, setShowRequestPart] = useState(false);
+  const [digitalForm, setDigitalForm] = useState<'service_schedule' | 'pdi' | null>(null);
 
   // Tracking WebSocket state
   const [chassisNumber, setChassisNumber] = useState('');
@@ -340,42 +342,36 @@ export const ServiceModule: React.FC = () => {
         </div>
       )}
 
-      {/* Quick Download Reference Templates */}
+      {/* Quick Reference Digital Forms */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4">
         <h3 className="text-xs font-bold text-[#1F3B73] uppercase tracking-wider flex items-center gap-1.5">
-          <FileText className="h-4.5 w-4.5" /> Department Guidelines & Schedules
+          <FileText className="h-4.5 w-4.5" /> Department Guidelines & Digital Forms
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
             <div>
               <p className="text-xs font-semibold text-slate-800 dark:text-white">Service Schedule, Labor & Part Prices</p>
-              <p className="text-[10px] text-slate-400">Official reference sheet for labor costs and schedules</p>
+              <p className="text-[10px] text-slate-400">Official sheet for labor costs and schedules</p>
             </div>
-            <a
-              href="http://localhost:5000/uploads/Service%20Schedule%20,Labor%20Cost%20,Part%20Replacement%20Sheet.pdf"
-              download
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => setDigitalForm('service_schedule')}
               className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center gap-1 transition-all"
             >
-              Download PDF
-            </a>
+              Fill Digital Form
+            </button>
           </div>
 
           <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 p-3 rounded hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
             <div>
-              <p className="text-xs font-semibold text-slate-800 dark:text-white">PDI Inspection Sheet PDF</p>
+              <p className="text-xs font-semibold text-slate-800 dark:text-white">PDI Inspection Sheet</p>
               <p className="text-[10px] text-slate-400">Pre-Delivery inspection checklists for technicians</p>
             </div>
-            <a
-              href="http://localhost:5000/uploads/PDI%20INSPECTION%20SHEET.pdf"
-              download
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => setDigitalForm('pdi')}
               className="px-2.5 py-1 bg-blue-500/10 text-blue-600 hover:bg-blue-500 hover:text-white text-[10px] font-bold rounded flex items-center gap-1 transition-all"
             >
-              Download PDF
-            </a>
+              Fill Digital Form
+            </button>
           </div>
         </div>
       </div>
@@ -732,6 +728,7 @@ export const ServiceModule: React.FC = () => {
           </div>
         </div>
       )}
+      <DigitalFormModal formType={digitalForm} isOpen={digitalForm !== null} onClose={() => setDigitalForm(null)} />
     </div>
   );
 };
