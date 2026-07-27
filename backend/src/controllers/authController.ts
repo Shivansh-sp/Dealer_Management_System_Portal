@@ -47,8 +47,8 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
     data: {
       tempToken,
       userId,
-      // For development ease, we also send the OTP in response under development mode
-      otp: process.env.NODE_ENV === 'development' ? otp : undefined,
+      // Include OTP in response for demo & simulation testing
+      otp: otp,
     },
     pagination: null,
     errors: null,
@@ -204,7 +204,7 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response, nex
     message: 'Password reset OTP sent to email.',
     data: {
       email,
-      resetToken: process.env.NODE_ENV === 'development' ? resetToken : undefined,
+      resetToken: resetToken,
     },
     pagination: null,
     errors: null,
