@@ -18,7 +18,7 @@ COPY package*.json ./
 RUN npm install --only=production
 
 COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/src/uploads ./uploads
+RUN mkdir -p uploads
 
 EXPOSE 5000
 

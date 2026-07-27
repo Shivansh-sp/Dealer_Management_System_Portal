@@ -7,7 +7,13 @@ let io: SocketServer | null = null;
 export const initSocket = (server: HttpServer) => {
   io = new SocketServer(server, {
     cors: {
-      origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+      origin: (origin, callback) => {
+        if (!origin || origin === process.env.CORS_ORIGIN || /\.vercel\.app$/.test(origin) || origin.startsWith('http://localhost:')) {
+          callback(null, true);
+        } else {
+          callback(null, true); // Fallback allow for WebSockets
+        }
+      },
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       credentials: true,
     },

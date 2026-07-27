@@ -23,16 +23,16 @@ const app = express();
 // Security Middlewares
 app.use(helmet());
 const allowedOrigins = [
-  process.env.CORS_ORIGIN || 'http://localhost:5173',
+  process.env.CORS_ORIGIN,
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:3000'
-];
+].filter(Boolean) as string[];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
